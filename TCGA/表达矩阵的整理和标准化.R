@@ -1,7 +1,11 @@
 # 将TCGA的RNA seq表达数据进行标准化
+setwd("D:\\research\\bioinformatics\\database\\TCGA\\COADREAD\\expr_data")
 acquire_tcga_rnaseq_expr_matrix_data <- function(dtype = "unstranded", outfile) {
-  sheet <- fread(list.files("expr_data", pattern = "sheet", recursive = TRUE, full.names = TRUE))
-  filenames <- list.files(pattern = "augmented_star_gene_counts", recursive = TRUE, full.names = TRUE)
+  library(data.table)
+  library(tidyverse)
+
+  sheet <- fread(list.files(pattern = "sheet", recursive = TRUE, full.names = TRUE))
+  filenames <- list.files(pattern = "augmented_star_gene_counts\\.tsv$", recursive = TRUE, full.names = TRUE, )
   data_list <- list()
   for (filename in filenames) {
     data <- fread(filename) |>
@@ -15,3 +19,4 @@ acquire_tcga_rnaseq_expr_matrix_data <- function(dtype = "unstranded", outfile) 
   data <- do.call(cbind, data_list)
   fwrite(data, file = outfile, row.names = TRUE)
 }
+acquire_tcga_rnaseq_expr_matrix_data(dtype = "tpm_unstranded", outfile = "TCGA_COADREAD_RNAseq_tpm_expr_matrix.csv")
