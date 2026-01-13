@@ -1,6 +1,11 @@
+setwd("D:\\research\\bioinformatics\\database\\TCGA\\COADREAD\\clinical")
 # 将TCGA的临床数据进行标准化
 acquire_tcga_clinical_data <- function(outfile) {
-  filenames <- list.files(pattern = "*xml$", recursive = TRUE)
+  library(tidyverse)
+  library(data.table)
+  library(XML)
+
+  filenames <- list.files(pattern = "xml$", recursive = TRUE)
   data_list <- list()
   for (filename in filenames) {
     data <- xmlParse(filename)
@@ -17,3 +22,4 @@ acquire_tcga_clinical_data <- function(outfile) {
             remove = FALSE)
   fwrite(data, file = outfile, row.names = FALSE)
 }
+acquire_tcga_clinical_data(outfile = "TCGA_COADREAD_clinical_data.csv")
