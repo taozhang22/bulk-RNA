@@ -1,4 +1,5 @@
 # 将TCGA的RNA seq表达数据进行标准化
+# 代码文件名字：
 setwd("D:\\research\\bioinformatics\\database\\TCGA\\COADREAD\\expr_data")
 acquire_tcga_rnaseq_expr_matrix_data <- function(dtype = "unstranded", outfile) {
   library(data.table)
