@@ -24,3 +24,56 @@ dds <- DESeqDataSetFromMatrix(countData = exp_data,
                               design = ~ condition)
 dds <- DESeq(dds, parallel = TRUE)
 res <- results(dds, contrast = c("condition", "Tumor", "Normal"), alpha = 0.05) |> as.data.frame()
+
+############################################################################################################# 
+# 绘制箱线图
+#############################################################################################################
+gene = "GPX4"
+data <- merge(x = as.data.frame(t(exp_data[gene, ])),
+              y = colData,
+              by = 0) |>
+    group_by(condition) |>
+    mutate(q1 = quantile(GPX4, 0.25, na.rm = TRUE),
+           q3 = quantile(GPX4, 0.75, na.rm = TRUE),
+           IQR = q3 - q1,
+           lower = q1 - 1.5 * IQR,
+           upper = q3 + 1.5 * IQR) |>
+    ungroup()
+# 获取差异分析的结果
+p <- res[gene, "padj"]
+star <- case_when(
+  is.na(p)    ~ "NA",
+  p < 1e-4    ~ "****",
+  p < 1e-3    ~ "***",
+  p < 1e-2    ~ "**",
+  p < 5e-2    ~ "*",
+  TRUE        ~ "ns"
+)
+
+
+p <- ggplot(data = data, aes(x = condition, y = GPX4)) +
+    geom_boxplot(aes(fill = condition), width = 0.5, outlier.shape = NA) +
+    geom_jitter(data = subset(data, GPX4 >= lower & GPX4 <= upper), width = 0.2, size = 0.5, alpha = 0.5) +
+    annotate("segment", x = 1, xend = 2, y = 15000, yend = 15000, linewidth = 0.6) +
+    annotate("text", x = 1.5, y = 15500, label = star, size = 6) +
+    labs(x = "", y = "GPX4") +
+    theme(legend.position = "none",
+          panel.background = element_rect(fill = "white", color = NA),
+          axis.line = element_line(color = "black")) +
+    scale_fill_manual(values = c("Normal" = "#1f77b4", "Tumor" = "#ff7f0e")) +
+    coord_cartesian(ylim = c(0, 15000))
+
+    
+  
+
+
+ggplot(data = data, aes(x = condition, y = GPX4)) +
+  geom_boxplot(aes(fill = condition), width = 0.5, outlier.shape = NA) +
+  geom_jitter(data = data_no_outliers, width = 0.2, size = 0.5, alpha = 0.5) +
+  labs(x = "Condition", y = "GPX4") +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white", color = NA) # 背景为白色
+        )) +
+  scale_fill_manual(values = c("Normal" = "#1f77b4", "Tumor" = "#ff7f0e"))
+
+
