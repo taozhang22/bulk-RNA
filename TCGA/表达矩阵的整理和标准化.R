@@ -5,7 +5,8 @@ acquire_tcga_rnaseq_expr_matrix_data <- function(dtype = "unstranded", outfile) 
   library(data.table)
   library(tidyverse)
 
-  sheet <- fread(list.files(pattern = "sheet", recursive = TRUE, full.names = TRUE))
+  filename <- list.files(pattern = "sheet", full.names = TRUE)
+  sheet <- fread(filename)
   filenames <- list.files(pattern = "augmented_star_gene_counts\\.tsv$", recursive = TRUE, full.names = TRUE, )
   data_list <- list()
   for (filename in filenames) {
