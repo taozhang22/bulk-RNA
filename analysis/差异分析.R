@@ -50,7 +50,6 @@ star <- case_when(
   TRUE        ~ "ns"
 )
 
-
 p <- ggplot(data = data, aes(x = condition, y = GPX4)) +
     geom_boxplot(aes(fill = condition), width = 0.5, outlier.shape = NA) +
     geom_jitter(data = subset(data, GPX4 >= lower & GPX4 <= upper), width = 0.2, size = 0.5, alpha = 0.5) +
@@ -62,18 +61,3 @@ p <- ggplot(data = data, aes(x = condition, y = GPX4)) +
           axis.line = element_line(color = "black")) +
     scale_fill_manual(values = c("Normal" = "#1f77b4", "Tumor" = "#ff7f0e")) +
     coord_cartesian(ylim = c(0, 15000))
-
-    
-  
-
-
-ggplot(data = data, aes(x = condition, y = GPX4)) +
-  geom_boxplot(aes(fill = condition), width = 0.5, outlier.shape = NA) +
-  geom_jitter(data = data_no_outliers, width = 0.2, size = 0.5, alpha = 0.5) +
-  labs(x = "Condition", y = "GPX4") +
-  theme(legend.position = "none",
-        panel.background = element_rect(fill = "white", color = NA) # 背景为白色
-        )) +
-  scale_fill_manual(values = c("Normal" = "#1f77b4", "Tumor" = "#ff7f0e"))
-
-
