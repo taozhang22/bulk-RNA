@@ -18,6 +18,7 @@ acquire_tcga_rnaseq_expr_matrix_data <- function(dtype = "unstranded", outfile) 
     data_list[[filename]] <- data
   }
   data <- do.call(cbind, data_list)
+  data <- data[, !duplicated(colnames(data))]
   fwrite(data, file = outfile, row.names = TRUE)
 }
-acquire_tcga_rnaseq_expr_matrix_data(dtype = "tpm_unstranded", outfile = "TCGA_COADREAD_RNAseq_tpm_expr_matrix.csv")
+acquire_tcga_rnaseq_expr_matrix_data(dtype = "tpm_unstranded", outfile = "../TCGA_COADREAD_RNAseq_tpm_expr_matrix.csv")
